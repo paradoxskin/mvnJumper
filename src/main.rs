@@ -1,9 +1,17 @@
 use std::io::Write;
 use std::fs::read_dir;
+use std::env;
 
 fn main() {
-	if let Err(err) = read_from_file("/home/paradoxskin/workspace/java/testforplugin/src/main/java/org/paradox/testforplugin/App.java") {
-		println!("{}", err);
+	let args: Vec<String> = std::env::args().collect();
+	println!("{}", args[0]);
+	if args[1] == "-q".to_string() {
+		if let Err(_) = read_from_file(&args[2]) {
+			println!("err");
+		}
+	}
+	else if args[1] == "-m".to_string() {
+		// TODO
 	}
 }
 
