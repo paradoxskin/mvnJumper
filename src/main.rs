@@ -1,11 +1,8 @@
-mod utils;
-
 use std::io::Write;
 use std::fs::read_dir;
-use std::collections::HashMap;
 
 fn main() {
-	if let Err(err) = read_from_file("/home/paradoxd/workspace/java/tmp-app/src/main/java/org/paradox/app/App.java") {
+	if let Err(err) = read_from_file("/home/paradoxskin/workspace/java/testforplugin/src/main/java/org/paradox/testforplugin/App.java") {
 		println!("{}", err);
 	}
 }
@@ -39,12 +36,15 @@ fn read_from_file(path: &str) -> std::io::Result<()>{
 	let project_dir_path = &path[..pre_pos];
 	// TODO dg
 	println!("{}", project_dir_path);
-	let mut class_to_path = HashMap::<String, String>::new();
-	loop_find(project_dir_path, &mut class_to_path)?;
+	let all_path = loop_find(project_dir_path, project_dir_path)?;
+	for i in all_path {
+		println!("{}${},", i.first, i.second);
+	}
 	Ok(())
 }
 
-fn loop_find(path: &str, map: &mut HashMap<String, String>) -> std::io::Result<()>{
+fn loop_find(project_dir_path: &str, path: &str) -> std::io::Result<Vec<StringPair>>{
+	let mut rt_vec = Vec::<StringPair>::new();
 	let in_dir = read_dir(path)?;
 	for thing in in_dir {
 		match thing {
@@ -53,6 +53,16 @@ fn loop_find(path: &str, map: &mut HashMap<String, String>) -> std::io::Result<(
 				if path.is_dir() {
 					let new_path = path.to_str();
 					if let Some(new_dir_path) = new_path {
+						let mut new_vec = loop_find(project_dir_path, new_dir_path)?;
+						rt_vec.append(&mut new_vec);
+					}
+				}
+				else {
+					let new_path = path.to_str();
+					if let Some(new_file_path) = new_path {
+						let file_path = new_file_path.to_string();
+						let class_name = file_path.replace(project_dir_path, "").replace("/", ".").replace(".java", "");
+						rt_vec.push(StringPair::new(class_name, file_path));
 					}
 				}
 			}
@@ -61,5 +71,19 @@ fn loop_find(path: &str, map: &mut HashMap<String, String>) -> std::io::Result<(
 			}
 		}
 	}
-	Ok(())
+	Ok(rt_vec)
+}
+
+struct StringPair {
+	first: String,
+	second: String,
+}
+
+impl StringPair {
+	fn new(first: String, second: String) -> Self {
+		Self {
+			first,
+			second,
+		}
+	}
 }
