@@ -7,6 +7,7 @@ endif
 def GetProjectTree(path: string): void
 	" first get tree of project
 	" popup windows
+	  popup_menu(items, {'line': 3, 'col': 3, 'minwidth': 60, 'maxheight': 12, 'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰']})
 	" q/esc to close
 	" j/k to move, enter to jump
 enddef
