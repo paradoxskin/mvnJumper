@@ -6,42 +6,72 @@ fn main() {
 	let args: Vec<String> = std::env::args().collect();
 	if args[1] == "-q".to_string() {
 		if let Err(_) = read_from_file(&args[2]) {
-			println!("err");
+			print!("err");
 		}
 	}
-	else if args[1] == "-m".to_string() {
-		// TODO
+	else if args[1] == "-c".to_string() {
+		match create_file(&args[2], &args[3]) {
+			Ok(path) => {
+				print!("{}", path);
+			}
+			Err(_) => {
+				print!("err");
+			}
+		}
+	}
+	else if args[1] == "-p".to_string() {
+		print!("{}", now_class_name(&args[2]))
 	}
 }
 
+fn create_file(class_name: &str, path: &str) -> std::io::Result<String>{
+	let stop = get_project_root(path);
+	let filename = format!("{}{}.java", &path[..stop], class_name.replace(".", "/"));
+	let mut file = std::fs::File::create(&filename)?;
+	let stop_point = get_last_point(class_name);
+	let pre = &class_name[..stop_point];
+	let class = &class_name[stop_point + 1 ..];
+	file.write_all(format!("package {};\n\npublic class {} {{\n}}", pre, class).as_bytes())?;
+	Ok(filename)
+}
+
+fn get_project_root(path: &str) -> usize {
+	for idx in (0..path.len()).rev() {
+		if let Some(ch) = path.get(idx - 14..idx + 1) {
+			if ch == "/src/main/java/" {
+				return idx + 1;
+			}
+		}
+		else {
+			break;
+		}
+	}
+	0
+}
+
+fn get_last_point(class_name: &str) -> usize{
+	for idx in (0..class_name.len()).rev() {
+		if let Some(ch) = class_name.get(idx..idx + 1) {
+			if ch == "." {
+				return idx;
+			}
+		}
+		else {
+			break;
+		}
+	}
+	0
+}
+
+fn now_class_name(path: &str) -> String {
+	let stop = get_project_root(path);
+	let st = &path[stop..].replace(".java", "").replace("/", ".");
+	return st.to_string();
+}
+
 fn read_from_file(path: &str) -> std::io::Result<()>{
-	let stop_pos = | path: &str | {
-		for idx in (0..path.len()).rev() {
-			if let Some(ch) = path.get(idx..idx + 1) {
-				if ch == "/" {
-					return idx;
-				}
-			}
-		}
-		path.len()
-	};
-	let pre_stop_pos = | path: &str | {
-		for idx in (0..path.len()).rev() {
-			if let Some(ch) = path.get(idx - 14..idx + 1) {
-				if ch == "/src/main/java/" {
-					return idx + 1;
-				}
-			}
-			else {
-				break;
-			}
-		}
-		0
-	};
-	let pos = stop_pos(path);
-	let pre_pos = pre_stop_pos(path);
+	let pre_pos = get_project_root(path);
 	let project_dir_path = &path[..pre_pos];
-	// TODO dg
 	let all_path = loop_find(project_dir_path, project_dir_path)?;
 	for i in all_path {
 		print!("{}!{},", i.first, i.second);
