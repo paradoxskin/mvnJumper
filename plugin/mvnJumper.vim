@@ -14,7 +14,7 @@ def OpenFile(id: number, res: number)
 	endif
 enddef
 
-def g:GetProjectTree(path: string): void
+def GetProjectTree(): void
 	# first get tree of project
 	var rt = system(filename .. " -q " .. expand('%:p'))
 	var lrt = split(rt, ",")
@@ -34,7 +34,7 @@ enddef
 
 var new_class_name = ""
 
-def g:CreateClass(): void
+def CreateClass(): void
 	new_class_name = system(filename .. " -p " .. expand('%:p'))
 	popup_menu(new_class_name, {
 				callback: (_, result) => {
@@ -76,5 +76,11 @@ def g:CreateClass(): void
 				borderchars: ['─', '│', '─', '│', '╭', '╮', '╯', '╰'],
 			})
 enddef
+
+command GetProjectTree call GetProjectTree()
+command CreateClass call CreateClass()
+
+nnoremap <Leader>kj :GetProjectTree<CR>
+nnoremap <Leader>cc :CreateClass<CR>
 
 g:mvnJumperLoaded = 1
