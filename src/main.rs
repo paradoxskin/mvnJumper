@@ -27,10 +27,12 @@ fn main() {
 fn create_file(class_name: &str, path: &str) -> std::io::Result<String>{
 	let stop = get_project_root(path);
 	let filename = format!("{}{}.java", &path[..stop], class_name.replace(".", "/"));
-	let mut file = std::fs::File::create(&filename)?;
 	let stop_point = get_last_point(class_name);
+	let dir_path = format!("{}{}", &path[..stop], class_name[..stop_point].replace(".", "/"));
+	std::fs::create_dir_all(dir_path)?;
 	let pre = &class_name[..stop_point];
 	let class = &class_name[stop_point + 1 ..];
+	let mut file = std::fs::File::create(&filename)?;
 	file.write_all(format!("package {};\n\npublic class {} {{\n}}", pre, class).as_bytes())?;
 	Ok(filename)
 }

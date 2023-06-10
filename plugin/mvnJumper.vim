@@ -29,7 +29,7 @@ def GetProjectTree(): void
 		add(filepath, tmpp[1])
 	endfor
 	# popup windows
-	popup_menu(classs, {'callback': 'OpenFile', 'line': 3, 'col': 3, 'minwidth': 60, 'maxheight': 12, 'borderchars': ['─', '│', '─', '│', '╭', '╮', '╯', '╰']})
+	popup_menu(classs, {'callback': 'OpenFile', 'line': 3, 'col': 3, 'minwidth': 60, 'maxheight': 12, 'borderchars': ['─', '│', '─', '│', '┌', '╮', '╯', '╰']})
 enddef
 
 var new_class_name = ""
@@ -39,7 +39,6 @@ def CreateClass(): void
 	popup_menu(new_class_name, {
 				callback: (_, result) => {
 					if result == 1
-						echo new_class_name
 						var flag = system(filename .. " -c " .. new_class_name .. " " .. expand('%:p'))
 						if flag != "err"
 							exec "edit " .. flag
@@ -80,7 +79,7 @@ enddef
 command GetProjectTree call GetProjectTree()
 command CreateClass call CreateClass()
 
-nnoremap <Leader>kj :GetProjectTree<CR>
-nnoremap <Leader>cc :CreateClass<CR>
+nnoremap <Leader>kk :GetProjectTree<CR>
+nnoremap <Leader>kn :CreateClass<CR>
 
 g:mvnJumperLoaded = 1
