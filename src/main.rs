@@ -4,7 +4,6 @@ use std::env;
 
 fn main() {
 	let args: Vec<String> = std::env::args().collect();
-	println!("{}", args[0]);
 	if args[1] == "-q".to_string() {
 		if let Err(_) = read_from_file(&args[2]) {
 			println!("err");
@@ -43,10 +42,9 @@ fn read_from_file(path: &str) -> std::io::Result<()>{
 	let pre_pos = pre_stop_pos(path);
 	let project_dir_path = &path[..pre_pos];
 	// TODO dg
-	println!("{}", project_dir_path);
 	let all_path = loop_find(project_dir_path, project_dir_path)?;
 	for i in all_path {
-		println!("{}${},", i.first, i.second);
+		print!("{}!{},", i.first, i.second);
 	}
 	Ok(())
 }
