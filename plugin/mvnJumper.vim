@@ -16,7 +16,12 @@ enddef
 
 def GetProjectTree(): void
 	# first get tree of project
-	var rt = system(filename .. " -q " .. expand('%:p'))
+	var rt = ""
+	if expand('%:f') == "pom.xml"
+		rt = system(filename .. " -q " .. expand('%:p:h') .. "/src/main/java/")
+	else
+		rt = system(filename .. " -q " .. expand('%:p'))
+	endif
 	var lrt = split(rt, ",")
 	classs = []
 	filepath = []
