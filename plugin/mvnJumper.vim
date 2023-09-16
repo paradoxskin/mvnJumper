@@ -84,7 +84,7 @@ enddef
 command GetProjectTree call GetProjectTree()
 command CreateClass call CreateClass()
 
-nnoremap <Leader>kk :GetProjectTree<CR>
-nnoremap <Leader>kn :CreateClass<CR>
-
-g:mvnJumperLoaded = 1
+#"nnoremap <Leader>kk :GetProjectTree<CR>
+#"nnoremap <Leader>kn :CreateClass<CR>
+#"
+#"g:mvnJumperLoaded = 1
